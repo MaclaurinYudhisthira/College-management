@@ -6,19 +6,19 @@
     <h1>Add Class</h1>
 <div class="container">
     <div class="card" style="width: 80%;margin: 20px auto; padding: 50px;">
-        <form action="{{url_for('addClass')}}" method="POST" id="form1">
+        <form action="{{url_for('editClass',id=c.class_id)}}" method="POST" id="form1">
             <div class="form-group">
                 Class name
-                <input type="text" class="form-control" name="class_name" id="" required>
+                <input type="text" class="form-control" name="class_name" id="" required value="{{c.class_name}}">
             </div>
             <div class="form-group">
                 Subject name
-                <input type="text" class="form-control" name="subject_name" id="" required>
+                <input type="text" class="form-control" name="subject_name" id="" required value="{{c.subject_name}}">
             </div>
             Teacher
-            <select>  
+            <select name="teacher_id">  
                 {% for t in teachers %}
-                <option value = "{{t.teacher_id}}">{{t.first_name+' '+t.last_name}}</option>  
+                <option value = "{{t.teacher_id}}"{% if t.teacher_id==c.teacher_id %}selected{% endif %}>{{t.first_name+' '+t.last_name}}</option>  
                 {% endfor %}
             </select>  
             <div class="form-group pt-2">

@@ -250,7 +250,6 @@ def addClass():
     if 'user_id' in session and session['role']=='Admin':
         if request.method=="GET":
             teachers=Teachers.query.all()
-            print(teachers)
             return render_template("admin/addclass.html",teachers=teachers)
         elif request.method=="POST":
             teacher_id=None
@@ -286,6 +285,27 @@ def getAdmins():
         admins=Admins.query.all()
         return render_template("admin/Admins.html",admins=admins)
 
+@app.route("/editTeacher/<id>",methods=['GET','POST'])
+def editTeacher(id):
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="POST":
+            teacher=Teachers.query.filter_by(teacher_id=id).first()
+            teacher.first_name=request.form['first_name']
+            teacher.last_name=request.form['last_name']
+            teacher.email=request.form['email']
+            teacher.phone_number=request.form['phone_number']
+            Myword=request.form['password'].encode()
+            f=Fernet(pass_key)
+            Myword=f.encrypt(Myword).decode()
+            teacher.password=Myword
+            db.session.commit()
+        teacher=Teachers.query.filter_by(teacher_id=id).first()
+        f=Fernet(pass_key)
+        Myword=f.decrypt(teacher.password.encode()).decode()
+        teacher=dict(teacher.__dict__)
+        teacher['password']=Myword
+        return render_template("admin/editteacher.html",teacher=teacher)
+
 @app.route("/editStudent/<id>",methods=['GET','POST'])
 def editStudent(id):
     if 'user_id' in session and session['role']=='Admin':
@@ -306,6 +326,42 @@ def editStudent(id):
         student=dict(student.__dict__)
         student['password']=Myword
         return render_template("admin/editstudent.html",student=student)
+
+@app.route("/editAdmin/<id>",methods=['GET','POST'])
+def editAdmin(id):
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="POST":
+            admin=Admins.query.filter_by(admin_id=id).first()
+            admin.first_name=request.form['first_name']
+            admin.last_name=request.form['last_name']
+            admin.email=request.form['email']
+            admin.phone_number=request.form['phone_number']
+            Myword=request.form['password'].encode()
+            f=Fernet(pass_key)
+            Myword=f.encrypt(Myword).decode()
+            admin.password=Myword
+            db.session.commit()
+        admin=Admins.query.filter_by(admin_id=id).first()
+        f=Fernet(pass_key)
+        Myword=f.decrypt(admin.password.encode()).decode()
+        admin=dict(admin.__dict__)
+        admin['password']=Myword
+        return render_template("admin/editadmin.html",admin=admin)
+
+@app.route("/editClass/<id>",methods=['GET','POST'])
+def editClass(id):
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="POST":
+            c=Classes.query.filter_by(class_id=id).first()
+            c.class_name=request.form['class_name']
+            c.subject_name=request.form['subject_name']
+            print(c.teacher_id)
+            c.teacher_id=request.form['teacher_id']
+            print(request.form['teacher_id'])
+            db.session.commit()
+        c=Classes.query.filter_by(class_id=id).first()
+        teachers=Teachers.query.all()
+        return render_template("admin/editClass.html",c=c,teachers=teachers)
 
 @app.route("/signout")
 def signout():

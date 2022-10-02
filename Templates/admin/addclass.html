@@ -16,7 +16,7 @@
                 <input type="text" class="form-control" name="subject_name" id="" required>
             </div>
             Teacher
-            <select>  
+            <select name="teacher_id">  
                 {% for t in teachers %}
                 <option value = "{{t.teacher_id}}">{{t.first_name+' '+t.last_name}}</option>  
                 {% endfor %}
