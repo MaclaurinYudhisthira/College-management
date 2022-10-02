@@ -78,12 +78,14 @@ def home():
         return render_template("student/index.html")
     if 'user_id' in session and session['role']=='Teacher':
         return render_template("teacher/index.html")
+    if 'user_id' in session and session['role']=='Admin':
+        return render_template("admin/index.html")
     return render_template("index.html")
 
 @app.route("/studentSignIn",methods=['GET','POST'])
 def studentSignIn():
     if 'user_id' in session and session['role']=='Student':
-        return render_template("student/index.html")
+        return redirect(url_for('home'))
     else:
         if request.method=="POST":
             if Students.query.filter_by(email=request.form['email'].lower()).first():
@@ -98,7 +100,7 @@ def studentSignIn():
                     session['user_id']=found_user.student_id
                     session['role']='Student'
                     flash('You have logged in Successfully','success')
-                    return render_template("student/index.html")
+                    return redirect(url_for('home'))
             else:   
                 flash('Account not found','error')
                 return redirect(url_for("home"))
@@ -109,7 +111,7 @@ def studentSignIn():
 @app.route("/teacherSignIn",methods=['GET','POST'])
 def teacherSignIn():
     if 'user_id' in session and session['role']=='Teacher':
-        return render_template("teacher/index.html")
+        return redirect(url_for('home'))
     else:
         if request.method=="POST":
             if Teachers.query.filter_by(email=request.form['email'].lower()).first():
@@ -125,7 +127,7 @@ def teacherSignIn():
                     session['user_id']=found_user.teacher_id
                     session['role']='Teacher'
                     flash('You have logged in Successfully','success')
-                    return render_template("teacher/index.html")
+                    return redirect(url_for('home'))
             else:
                 flash('Account not found','error')
                 return redirect(url_for("home"))
@@ -136,7 +138,7 @@ def teacherSignIn():
 @app.route("/adminSignIn",methods=['GET','POST'])
 def adminSignIn():
     if 'user_id' in session and session['role']=='Admin':
-        return render_template("admin/index.html")
+        return redirect(url_for('home'))
     else:
         if request.method=="POST":
             if Admins.query.filter_by(email=request.form['email'].lower()).first():
@@ -153,7 +155,7 @@ def adminSignIn():
                     session['user_id']=found_user.admin_id
                     session['role']='Admin'
                     flash('You have logged in Successfully','success')
-                    return render_template("admin/index.html")
+                    return redirect(url_for('home'))
             else:
                 flash('Account not found','error')
                 return redirect(url_for("home"))
@@ -177,13 +179,60 @@ def validateMasterKey():
 @app.route("/addAdmin",methods=['GET','POST'])
 def addAdmin():
     if ('ismaster' in session and session['ismaster'] == True) or ('user_id' in session and session['role']=='Admin'):
-        Myword=request.form['password'].encode()
-        f=Fernet(pass_key)
-        Myword=f.encrypt(Myword).decode()
-        Admin =Admins(request.form['first_name'].lower().capitalize(),request.form['last_name'].lower().capitalize(),request.form['email'].lower(),request.form['phone_number'].lower(),Myword)
-        db.session.add(Admin)
-        db.session.commit()
-        return render_template("admin/index.html")
+        if request.method=="POST":
+            Myword=request.form['password'].encode()
+            f=Fernet(pass_key)
+            Myword=f.encrypt(Myword).decode()
+            Admin =Admins(request.form['first_name'].lower().capitalize(),request.form['last_name'].lower().capitalize(),request.form['email'].lower(),request.form['phone_number'].lower(),Myword)
+            db.session.add(Admin)
+            db.session.commit()
+            return redirect(url_for('signout'))
+        else:
+            return render_template("admin/addadmin.html")
+    return redirect(url_for('signout'))
+
+@app.route("/addStudent",methods=['GET','POST'])
+def addStudent():
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="GET":
+            return render_template("admin/addstudent.html")
+        elif request.method=="POST":
+            if Students.query.filter_by(email=request.form['email'].lower()).first():
+                flash('This Email address is already registerd','error')
+                return render_template("admin/addstudent.html")
+            elif Students.query.filter_by(phone_number=request.form['phone_number'].lower()).first():
+                flash('This phone_number address is already registerd','error')
+                return render_template("admin/addstudent.html")
+            else:
+                Myword=request.form['password'].encode()
+                f=Fernet(pass_key)
+                Myword=f.encrypt(Myword).decode()
+                Student =Students(request.form['first_name'].lower().capitalize(),request.form['last_name'].lower().capitalize(),request.form['email'].lower(),request.form['phone_number'].lower(),Myword)
+                db.session.add(Student)
+                db.session.commit()
+                return redirect(url_for('home'))
+    return redirect(url_for('signout'))
+
+@app.route("/addTeacher",methods=['GET','POST'])
+def addTeacher():
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="GET":
+            return render_template("admin/addteacher.html")
+        elif request.method=="POST":
+            if Teachers.query.filter_by(email=request.form['email'].lower()).first():
+                flash('This Email address is already registerd','error')
+                return render_template("admin/addteacher.html")
+            elif Teachers.query.filter_by(phone_number=request.form['phone_number'].lower()).first():
+                flash('This phone_number address is already registerd','error')
+                return render_template("admin/addteacher.html")
+            else:
+                Myword=request.form['password'].encode()
+                f=Fernet(pass_key)
+                Myword=f.encrypt(Myword).decode()
+                Teacher =Teachers(request.form['first_name'].lower().capitalize(),request.form['last_name'].lower().capitalize(),request.form['email'].lower(),request.form['phone_number'].lower(),Myword)
+                db.session.add(Teacher)
+                db.session.commit()
+                return redirect(url_for('home'))
     return redirect(url_for('signout'))
 
 @app.route("/signout")
