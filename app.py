@@ -73,10 +73,25 @@ class Classes(db.Model):
     class_name=db.Column(db.String(50), nullable=False)
     subject_name=db.Column(db.String(50), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.teacher_id'))
-    def __init__(self,class_name,subject_name,teacher_id):
+    teacher_name=db.Column(db.String(100))
+    def __init__(self,class_name,subject_name,teacher_id=None,teacher_name=None):
         self.class_name=class_name
         self.subject_name=subject_name
         self.teacher_id=teacher_id
+        self.teacher_name=teacher_name
+
+# Table for Student and Class association, we will call it enrollments
+class Enrollment(db.Model):
+    record_id = db.Column(db.Integer, primary_key=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.class_id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'))
+    class_name=db.Column(db.String(50))
+    student_name=db.Column(db.String(50))
+    def __init__(self,class_id,student_id,class_name=None,student_name=None):
+        self.class_id=class_id
+        self.student_id=student_id
+        self.class_name=class_name
+        self.student_name=student_name
 
 # Creating Database
 db.create_all()
@@ -255,7 +270,8 @@ def addClass():
             teacher_id=None
             if 'teacher_id' in request.form:
                 teacher_id=request.form['teacher_id']
-            aclass =Classes(request.form['class_name'].lower().capitalize(),request.form['subject_name'].lower().capitalize(),teacher_id)
+            teacher=Teachers.query.filter_by(teacher_id=teacher_id).first()
+            aclass =Classes(request.form['class_name'].lower().capitalize(),request.form['subject_name'].lower().capitalize(),teacher_id,teacher.first_name+' '+teacher.last_name)
             db.session.add(aclass)
             db.session.commit()
             return redirect(url_for('home'))
@@ -355,13 +371,24 @@ def editClass(id):
             c=Classes.query.filter_by(class_id=id).first()
             c.class_name=request.form['class_name']
             c.subject_name=request.form['subject_name']
-            print(c.teacher_id)
             c.teacher_id=request.form['teacher_id']
-            print(request.form['teacher_id'])
+            teacher=Teachers.query.filter_by(teacher_id=c.teacher_id).first()
+            c.teacher_name=teacher.first_name+' '+teacher.last_name
             db.session.commit()
         c=Classes.query.filter_by(class_id=id).first()
         teachers=Teachers.query.all()
         return render_template("admin/editClass.html",c=c,teachers=teachers)
+
+@app.route("/enrollStudent",methods=['GET','POST'])
+def enrollStudent():
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="POST":
+            pass
+        else:
+            for s, e in db.session.query(Students,Enrollment).filter(Students.student_id != Enrollment.student_id).all():
+                print(f"{s} {e}")
+            # print(db.session.query(Students,Enrollment).filter(Students.student_id != Enrollment.student_id).all())
+            return render_template('admin/enrollstudent.html')
 
 @app.route("/signout")
 def signout():
@@ -375,11 +402,12 @@ def load():
     Myword=f.encrypt(Myword).decode()
     Student=Students('Student','Test','teststudent@gmail.com','+919900990099',Myword)
     Teacher=Teachers('Teacher','Test','testteacher@gmail.com','+919900990099',Myword)
-    
+    Class=Classes('Class','Subject','1','Teacher_Test')
     db.session.add(Student)
     db.session.add(Teacher)
-    # Admin=Admins('Teacher','Test','testteacher@gmail.com','+919900990099',Myword)
-    # db.session.add(Admin)
+    db.session.add(Class)
+    Admin=Admins('Teacher','Test','testadmin@gmail.com','+919900990099',Myword)
+    db.session.add(Admin)
     db.session.commit()
     return "Data is loaded for testing"
 

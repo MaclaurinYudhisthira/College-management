@@ -3,7 +3,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content%}
-    <h1>Add Class</h1>
+    <h1>Edit Class</h1>
+    <a href="{{url_for('enrollStudent')}}">Add students to this class</a>
 <div class="container">
     <div class="card" style="width: 80%;margin: 20px auto; padding: 50px;">
         <form action="{{url_for('editClass',id=c.class_id)}}" method="POST" id="form1">

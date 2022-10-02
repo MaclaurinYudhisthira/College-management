@@ -1,0 +1,37 @@
+{% extends "Admin/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content%}
+<h1>Students</h1>
+<table>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th></th>
+    </tr>
+    {% for s in students%}
+    <tr>
+        <th><input type="checkbox" class="check"></th>
+        <td>{{s.student_id}}</td>
+        <td>{{s.first_name}}</td>
+        <td>{{s.last_name}}</td>
+        <td><a href="/editStudent/{{s.student_id}}">edit</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form action="#" method="POST" hidden>
+    <input type="text" name="" id="adds">
+</form>
+<script>
+    ip=document.getElementById('adds')
+    cbs=document.getElementsByClassName('check').addEventListner('click',function(e){
+        if(e.target.className=='Check'){
+            console.log(e.target)
+        }
+    })
+    
+</script>
+{% endblock %}
