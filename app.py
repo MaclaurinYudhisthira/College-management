@@ -385,9 +385,8 @@ def enrollStudent():
         if request.method=="POST":
             pass
         else:
-            for s, e in db.session.query(Students,Enrollment).filter(Students.student_id != Enrollment.student_id).all():
+            for s, e in db.session.query(Students,Enrollment).filter(Students.student_id == Enrollment.student_id).all():
                 print(f"{s} {e}")
-            # print(db.session.query(Students,Enrollment).filter(Students.student_id != Enrollment.student_id).all())
             return render_template('admin/enrollstudent.html')
 
 @app.route("/signout")
@@ -408,6 +407,8 @@ def load():
     db.session.add(Class)
     Admin=Admins('Teacher','Test','testadmin@gmail.com','+919900990099',Myword)
     db.session.add(Admin)
+    en=Enrollment(1,1,'class','Student Test')
+    db.session.add(en)
     db.session.commit()
     return "Data is loaded for testing"
 
