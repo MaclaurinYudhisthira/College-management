@@ -1,0 +1,25 @@
+{% extends "Admin/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content%}
+<h1>Teachers</h1>
+<table>
+    <tr>
+      <th>Id</th>
+      <th>First name</th>
+      <th>Last name</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for t in teachers%}
+    <tr>
+      <td>{{t.teacher_id}}</td>
+      <td>{{t.first_name}}</td>
+      <td>{{t.last_name}}</td>
+      <td>edit</td>
+      <td>delete</td>
+    </tr>
+    {% endfor %}
+  </table> 
+{% endblock %}

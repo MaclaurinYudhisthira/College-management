@@ -1,12 +1,14 @@
-{% extends "Admin/base.html" %}
+{% extends "admin/base.html" %}
 
 {% block title %}Home{% endblock %}
 
 {% block content%}
-    <h1>Add Teacher</h1>
+    <!-- <h1>Logged in as Admin</h1> -->
+    <!-- <a href="{{url_for('signout')}}">Log out</a> -->
+    <h1>Add Admin</h1>
 <div class="container">
     <div class="card" style="width: 80%;margin: 20px auto; padding: 50px;">
-        <form action="{{url_for('addTeacher')}}" method="POST" id="form1">
+        <form action="{{url_for('addAdmin')}}" method="POST" id="form1">
             <div class="form-group">
                 First name
                 <input type="text" class="form-control" name="first_name" id="" required>

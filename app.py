@@ -262,6 +262,51 @@ def addClass():
             return redirect(url_for('home'))
     return redirect(url_for('signout'))
 
+@app.route("/getStudents",methods=['GET'])
+def getStudents():
+    if 'user_id' in session and session['role']=='Admin':
+        students=Students.query.all()
+        return render_template("admin/students.html",students=students)
+
+@app.route("/getTeachers",methods=['GET'])
+def getTeachers():
+    if 'user_id' in session and session['role']=='Admin':
+        teachers=Teachers.query.all()
+        return render_template("admin/Teachers.html",teachers=teachers)
+
+@app.route("/getClasses",methods=['GET'])
+def getClasses():
+    if 'user_id' in session and session['role']=='Admin':
+        classes=Classes.query.all()
+        return render_template("admin/Classes.html",classes=classes)
+
+@app.route("/getAdmins",methods=['GET'])
+def getAdmins():
+    if 'user_id' in session and session['role']=='Admin':
+        admins=Admins.query.all()
+        return render_template("admin/Admins.html",admins=admins)
+
+@app.route("/editStudent/<id>",methods=['GET','POST'])
+def editStudent(id):
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="POST":
+            student=Students.query.filter_by(student_id=id).first()
+            student.first_name=request.form['first_name']
+            student.last_name=request.form['last_name']
+            student.email=request.form['email']
+            student.phone_number=request.form['phone_number']
+            Myword=request.form['password'].encode()
+            f=Fernet(pass_key)
+            Myword=f.encrypt(Myword).decode()
+            student.password=Myword
+            db.session.commit()
+        student=Students.query.filter_by(student_id=id).first()
+        f=Fernet(pass_key)
+        Myword=f.decrypt(student.password.encode()).decode()
+        student=dict(student.__dict__)
+        student['password']=Myword
+        return render_template("admin/editstudent.html",student=student)
+
 @app.route("/signout")
 def signout():
     session.clear()
