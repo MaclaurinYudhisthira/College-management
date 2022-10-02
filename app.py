@@ -68,6 +68,16 @@ class Admins(db.Model):
         self.password = password
         self.phone_number = phone_number
 
+class Classes(db.Model):
+    class_id = db.Column(db.Integer, primary_key=True)
+    class_name=db.Column(db.String(50), nullable=False)
+    subject_name=db.Column(db.String(50), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.teacher_id'))
+    def __init__(self,class_name,subject_name,teacher_id):
+        self.class_name=class_name
+        self.subject_name=subject_name
+        self.teacher_id=teacher_id
+
 # Creating Database
 db.create_all()
 
@@ -233,6 +243,23 @@ def addTeacher():
                 db.session.add(Teacher)
                 db.session.commit()
                 return redirect(url_for('home'))
+    return redirect(url_for('signout'))
+
+@app.route("/addClass",methods=['GET','POST'])
+def addClass():
+    if 'user_id' in session and session['role']=='Admin':
+        if request.method=="GET":
+            teachers=Teachers.query.all()
+            print(teachers)
+            return render_template("admin/addclass.html",teachers=teachers)
+        elif request.method=="POST":
+            teacher_id=None
+            if 'teacher_id' in request.form:
+                teacher_id=request.form['teacher_id']
+            aclass =Classes(request.form['class_name'].lower().capitalize(),request.form['subject_name'].lower().capitalize(),teacher_id)
+            db.session.add(aclass)
+            db.session.commit()
+            return redirect(url_for('home'))
     return redirect(url_for('signout'))
 
 @app.route("/signout")

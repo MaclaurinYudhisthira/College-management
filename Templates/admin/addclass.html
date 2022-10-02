@@ -1,0 +1,30 @@
+{% extends "Teacher/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content%}
+    <h1>Add Teacher</h1>
+<div class="container">
+    <div class="card" style="width: 80%;margin: 20px auto; padding: 50px;">
+        <form action="{{url_for('addClass')}}" method="POST" id="form1">
+            <div class="form-group">
+                Class name
+                <input type="text" class="form-control" name="class_name" id="" required>
+            </div>
+            <div class="form-group">
+                Subject name
+                <input type="text" class="form-control" name="subject_name" id="" required>
+            </div>
+            Teacher
+            <select>  
+                {% for t in teachers %}
+                <option value = "{{t.teacher_id}}">{{t.first_name+' '+t.last_name}}</option>  
+                {% endfor %}
+            </select>  
+            <div class="form-group pt-2">
+                <input class="form-control" type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
