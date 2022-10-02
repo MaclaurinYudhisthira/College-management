@@ -11,7 +11,6 @@
       <th>Subject name</th>
       <th>Teacher</th>
       <th></th>
-      <th></th>
     </tr>
     {% for c in classes%}
     <tr>
@@ -20,7 +19,6 @@
       <td>{{c.subject_name}}</td>
       <td>{{c.teacher_id}}</td>
       <td><a href="/editClass/{{c.class_id}}">edit</a></td>
-      <td>delete</td>
     </tr>
     {% endfor %}
   </table> 

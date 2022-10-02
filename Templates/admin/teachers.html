@@ -10,7 +10,6 @@
       <th>First name</th>
       <th>Last name</th>
       <th></th>
-      <th></th>
     </tr>
     {% for t in teachers%}
     <tr>
@@ -18,7 +17,6 @@
       <td>{{t.first_name}}</td>
       <td>{{t.last_name}}</td>
       <td><a href="/editTeacher/{{t.teacher_id}}">edit</a></td>
-      <td>delete</td>
     </tr>
     {% endfor %}
   </table> 
