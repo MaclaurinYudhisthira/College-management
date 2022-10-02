@@ -1,8 +1,8 @@
-{% extends "student/base.html" %}
+{% extends "teacher/base.html" %}
 
 {% block title %}Home{% endblock %}
 
 {% block content%}
-    <h1>Logged in as student</h1>
+    <h1>Logged in as teacher</h1>
     <a href="{{url_for('signout')}}">Log out</a>
 {% endblock %}

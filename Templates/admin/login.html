@@ -1,10 +1,10 @@
-{% extends "student/base.html" %}
+{% extends "admin/base.html" %}
 
 {% block title %}Student Login{% endblock %}
 
 {% block content%}
-    <h1>Student Login</h1>
-    <form action="{{url_for('studentSignIn')}}" method="POST">
+    <h1>Admin Login</h1>
+    <form action="{{url_for('adminSignIn')}}" method="POST">
         Enter Email or Phone Number
         <input type="text" name="email" placeholder="Email or Phone number here" id="" required>
         Enter Password

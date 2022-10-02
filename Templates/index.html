@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content%}
     <h1>Collage Management</h1>
+    <a href="{{url_for('signout')}}">Log out</a>
     <h3>Login as</h3>
     <ul>
-        
         <li><a href="{{url_for('studentSignIn')}}">Student</a></li>
+        <li><a href="{{url_for('teacherSignIn')}}">Teacher</a></li> 
+        <li><a href="{{url_for('adminSignIn')}}">Admin</a></li>
     </ul>
-</body>
-</html>
+{% endblock %}

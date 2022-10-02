@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content%}
+    <h1>Logged in as Admin</h1>
+    <a href="{{url_for('signout')}}">Log out</a>
+
+    <ul>
+        <li>Add student</li>
+        <li>Add teacher</li>
+        <li>Add Admin</li>
+        <li>Add class</li>
+        <li>See students</li>
+        <li>See teachers</li>
+        <li>See admins</li>
+        <li>See classes</li>
+        <li>Modify student</li>
+        <li>Modify teachers</li>
+        <li>Modify Admins</li>
+        <li>Modify Classes</li>
+        <li>delete student</li>
+        <li>delete teacher</li>
+        <li>delete admin</li>
+        <li>delete class</li>
+        <li>Notifications for student</li>
+        <li>Notifications for teacher</li>
+    </ul>
+{% endblock %}
